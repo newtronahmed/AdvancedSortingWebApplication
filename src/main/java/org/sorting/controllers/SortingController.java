@@ -30,7 +30,7 @@ public class SortingController {
     public List<SortingAlgorithm> getAllAlgorithms() {
         return new ArrayList<>(algorithmMap.values());
     }
-    @GetMapping("/hello")
+//    @GetMapping("/hello")
 //    public String sayHello() {
 ////        return new Algorithm("Insertion sort");
 //        return "hello";
@@ -58,6 +58,14 @@ public class SortingController {
         }
 
         return new ResponseEntity<>(new SortingResponse(sortedArray), HttpStatus.OK);
+    }
+    @GetMapping("/{name}")
+    public ResponseEntity<SortingAlgorithm> getAlgorithm(@PathVariable("name") String name) {
+        SortingAlgorithm algorithm = algorithmMap.get(name);
+        if (algorithm == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(algorithm, HttpStatus.OK);
     }
 
 
