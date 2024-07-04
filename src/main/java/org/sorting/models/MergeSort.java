@@ -1,7 +1,7 @@
 package org.sorting.models;
 
 
-public class MergeSort implements SortingAlgorithm {
+public class MergeSort extends SortingAlgorithm {
 
     @Override
     public void sort(int[] array) {

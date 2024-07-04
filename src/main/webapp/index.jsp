@@ -3,6 +3,7 @@
 <html>
 <head>
     <title>Sorting Algorithms</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -54,18 +55,39 @@
 <body>
 <div class="container">
     <h1>Sorting Algorithms</h1>
-    <ul>
-        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Bubble Sort</a></li>
-        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Selection Sort</a></li>
-        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Insertion Sort</a></li>
-        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Merge Sort</a></li>
-        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Quick Sort</a></li>
-        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Heap Sort</a></li>
-        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Radix Sort</a></li>
-        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Bucket Sort</a></li>
-        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Shell Sort</a></li>
+    <ul class="" id="algorithm-list">
+<%--        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Bubble Sort</a></li>--%>
+<%--        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Selection Sort</a></li>--%>
+<%--        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Insertion Sort</a></li>--%>
+<%--        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Merge Sort</a></li>--%>
+<%--        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Quick Sort</a></li>--%>
+<%--        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Heap Sort</a></li>--%>
+<%--        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Radix Sort</a></li>--%>
+<%--        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Bucket Sort</a></li>--%>
+<%--        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Shell Sort</a></li>--%>
+
     </ul>
 </div>
+<script>
+    $(document).ready(function() {
+        // Make an AJAX call to the /api/algorithms endpoint
+        $.ajax({
+            url: '/api/algorithms',
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                // Iterate over the list of algorithms and append them to the UL
+                var algorithmList = $('#algorithm-list');
+                data.forEach(function(algorithm) {
+                    algorithmList.append('<li><a class="link-button" href="/api/algorithms/' + algorithm.name + '">' + algorithm.name + '</a></li>');
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching algorithms:', error);
+            }
+        });
+    });
+</script>
 </body>
 </html>
 

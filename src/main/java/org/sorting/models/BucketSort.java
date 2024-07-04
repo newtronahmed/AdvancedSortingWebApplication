@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class BucketSort implements SortingAlgorithm {
+public class BucketSort extends SortingAlgorithm {
 
     @Override
     public void sort(int[] array) {

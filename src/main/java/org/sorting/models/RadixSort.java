@@ -3,7 +3,7 @@ package org.sorting.models;
 
 import java.util.Arrays;
 
-public class RadixSort implements SortingAlgorithm {
+public class RadixSort extends SortingAlgorithm {
 
     @Override
     public void sort(int[] array) {
