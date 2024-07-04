@@ -1,9 +1,9 @@
-package org.sorting.models;
+package org.sorting.algorithms;
 
 
 import java.util.Arrays;
 
-public class RadixSort extends SortingAlgorithm {
+public class RadixSort implements SortingAlgorithmInterface {
 
     @Override
     public void sort(int[] array) {

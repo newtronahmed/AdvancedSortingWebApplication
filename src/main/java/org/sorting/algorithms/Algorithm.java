@@ -1,4 +1,4 @@
-package org.sorting.models;
+package org.sorting.algorithms;
 
 public class Algorithm {
 

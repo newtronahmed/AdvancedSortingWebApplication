@@ -17,6 +17,6 @@
         </c:if>
     </c:forEach>
 </ul>
-<a href="<c:url value='/algorithms'/>">Back to List</a>
+<a href="<c:url value='/'/>">Back to List</a>
 </body>
 </html>

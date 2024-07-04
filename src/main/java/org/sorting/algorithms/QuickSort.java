@@ -1,7 +1,7 @@
-package org.sorting.models;
+package org.sorting.algorithms;
 
 
-public class QuickSort extends SortingAlgorithm {
+public class QuickSort implements SortingAlgorithmInterface {
 
     @Override
     public void sort(int[] array) {

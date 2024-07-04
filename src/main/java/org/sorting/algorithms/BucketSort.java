@@ -1,10 +1,10 @@
-package org.sorting.models;
+package org.sorting.algorithms;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class BucketSort extends SortingAlgorithm {
+public class BucketSort implements SortingAlgorithmInterface {
 
     @Override
     public void sort(int[] array) {
