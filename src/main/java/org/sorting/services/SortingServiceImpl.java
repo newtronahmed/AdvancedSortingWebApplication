@@ -1,9 +1,6 @@
 package org.sorting.services;
 
-import org.sorting.algorithms.BucketSort;
-import org.sorting.algorithms.MergeSort;
-import org.sorting.algorithms.QuickSort;
-import org.sorting.algorithms.RadixSort;
+import org.sorting.algorithms.*;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,5 +38,12 @@ public class SortingServiceImpl implements SortingService {
         return array;
     }
 
+    @Override
+    public int[] heapSort(int[] array) {
+        HeapSort heapSort = new HeapSort();
+        heapSort.sort(array);
+        return array;
+
+    }
     // Implement other sorting algorithms here
 }

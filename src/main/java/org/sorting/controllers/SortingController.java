@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/algorithms")
+@RequestMapping("/api")
 public class SortingController {
 
     private Map<String, SortingAlgorithm> algorithmMap = new HashMap<>();
@@ -63,12 +63,16 @@ private SortingResponseAssembler assembler;
                 case "radixSort":
                     sortedArray = sortingService.radixSort(request.getArray());
                     break;
+
+                case "heapSort":
+                    sortedArray = sortingService.heapSort(request.getArray());
+                    break;
                 default:
                     return ResponseEntity.badRequest().body(new SortingResponse("Unsupported algorithm: " + algorithm));
             }
 
             // Return sorted array
-            return ResponseEntity.ok(assembler.toModel(new SortingResponse(sortedArray)));
+            return ResponseEntity.ok(assembler.toModel(new SortingResponse(sortedArray, algorithm)).getContent());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new SortingResponse("Internal server error"));
         }

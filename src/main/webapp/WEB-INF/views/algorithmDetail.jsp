@@ -40,13 +40,6 @@
         ul li {
             margin: 5px 0;
         }
-        ul li a {
-            color: #3498db;
-            text-decoration: none;
-        }
-        ul li a:hover {
-            text-decoration: underline;
-        }
         form {
             margin-top: 20px;
         }
@@ -72,14 +65,26 @@
             color: red;
             padding: 5px;
         }
+        .algorithm-button {
+            margin: 5px;
+            padding: 10px 20px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .algorithm-button:hover {
+            background-color: #27ae60;
+        }
     </style>
     <script>
-        $(document).ready(function (message) {
+        $(document).ready(function() {
             var algorithmName = '<c:out value="${name}" />'; // Getting the algorithm name from the model attribute
 
             // Fetch algorithm details
             $.ajax({
-                url: '/api/algorithms/' + algorithmName,
+                url: '/api/' + algorithmName,
                 method: 'GET',
                 success: function(data) {
                     $('#algorithm-name').text(data.name);
@@ -88,14 +93,13 @@
                     var relatedAlgorithms = '';
                     for (var key in links) {
                         if (key !== 'self') {
-                            relatedAlgorithms += '<li><a href="/algorithm-details/' + key + '">' + key + '</a></li>';
+                            relatedAlgorithms += '<li><button class="algorithm-button" data-url="' + links[key].href + '">' + key + '</button></li>';
                         }
                     }
                     $('#related-algorithms').html(relatedAlgorithms);
                 },
                 error: function(error) {
                     console.log('Error fetching algorithm details:', error);
-
                 }
             });
 
@@ -107,16 +111,36 @@
                     return item.trim();
                 });
                 $.ajax({
-                    url: '/api/algorithms/sort',
+                    url: '/api/sort/' + algorithmName,
                     method: 'POST',
                     contentType: 'application/json',
-                    data: JSON.stringify({ array: array, algorithm:algorithmName }),
+                    data: JSON.stringify({ array: array }),
                     success: function(response) {
                         $('#sorted-array').text('Sorted Array: ' + response.sortedArray.join(', '));
                     },
                     error: function(error) {
-                        // console.log('Error sorting array:', error);
-                        $('#error').text('There was an error while processing you request, kindly check your input');
+                        $('#error').text('There was an error while processing your request, kindly check your input');
+                    }
+                });
+            });
+
+            // Handle algorithm button clicks
+            $(document).on('click', '.algorithm-button', function() {
+                var arrayInput = $('#array-input').val();
+                var array = arrayInput.split(',').map(function(item) {
+                    return item.trim();
+                });
+                var url = $(this).data('url');
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ array: array }),
+                    success: function(response) {
+                        $('#sorted-array').text('Sorted Array: ' + response.sortedArray.join(', '));
+                    },
+                    error: function(error) {
+                        $('#error').text('There was an error while processing your request, kindly check your input');
                     }
                 });
             });

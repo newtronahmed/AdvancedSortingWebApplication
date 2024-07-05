@@ -72,7 +72,7 @@
     $(document).ready(function() {
         // Make an AJAX call to the /api/algorithms endpoint
         $.ajax({
-            url: '/api/algorithms',
+            url: '/api',
             method: 'GET',
             dataType: 'json',
             success: function(data) {
