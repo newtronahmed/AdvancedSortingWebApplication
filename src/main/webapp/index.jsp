@@ -79,7 +79,7 @@
                 // Iterate over the list of algorithms and append them to the UL
                 var algorithmList = $('#algorithm-list');
                 data.forEach(function(algorithm) {
-                    algorithmList.append('<li><a class="link-button" href="/api/algorithms/' + algorithm.name + '">' + algorithm.name + '</a></li>');
+                    algorithmList.append('<li><a class="link-button" href="/algorithmDetails/' + algorithm.name + '">' + algorithm.name + '</a></li>');
                 });
             },
             error: function(xhr, status, error) {
