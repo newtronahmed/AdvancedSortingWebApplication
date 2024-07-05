@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class PagesController {
 
     @GetMapping("/algorithmDetails/{name}")
-    public String showAlgorithmDetailsPage(@PathVariable String name, Model model) {
+    public String showAlgorithmDetailsPage(@PathVariable("name") String name, Model model) {
       model.addAttribute("name", name);
      return "algorithmDetail"; // The name of your JSP file
     }
