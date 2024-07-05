@@ -70,7 +70,7 @@
         }
     </style>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function (message) {
             var algorithmName = '<c:out value="${name}" />'; // Getting the algorithm name from the model attribute
 
             // Fetch algorithm details
@@ -80,7 +80,7 @@
                 success: function(data) {
                     $('#algorithm-name').text(data.name);
                     $('#algorithm-description').text(data.description);
-                    var links = data._links;
+                    var links = data.links;
                     var relatedAlgorithms = '';
                     for (var key in links) {
                         if (key !== 'self') {
@@ -102,10 +102,10 @@
                     return item.trim();
                 });
                 $.ajax({
-                    url: '/api/algorithms/' + algorithmName + '/sort',
+                    url: '/api/algorithms/sort',
                     method: 'POST',
                     contentType: 'application/json',
-                    data: JSON.stringify({ array: array }),
+                    data: JSON.stringify({ array: array, algorithm:algorithmName }),
                     success: function(response) {
                         $('#sorted-array').text('Sorted Array: ' + response.sortedArray.join(', '));
                     },

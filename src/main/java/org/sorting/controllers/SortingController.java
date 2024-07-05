@@ -2,6 +2,7 @@ package org.sorting.controllers;
 
 import org.sorting.algorithms.SortingAlgorithm;
 import org.sorting.services.SortingService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,10 +18,12 @@ import java.util.Map;
 public class SortingController {
 
     private Map<String, SortingAlgorithm> algorithmMap = new HashMap<>();
-    private final SortingService sortingService;
+//    private final SortingService sortingService;
+@Autowired
+private SortingService sortingService;
 
     public SortingController(SortingService sortingService) {
-        this.sortingService = sortingService;
+//        this.sortingService = sortingService;
         // Initialize some algorithms
         algorithmMap.put("quickSort", new SortingAlgorithm("quickSort", "Quick Sort Description"));
         algorithmMap.put("mergeSort", new SortingAlgorithm("mergeSort", "Merge Sort Description"));
@@ -37,7 +40,7 @@ public class SortingController {
 //    }
 
     @PostMapping("/sort")
-    public ResponseEntity<SortingResponse> sortArray(@RequestBody org.sorting.models.SortingRequest request) {
+    public ResponseEntity<SortingResponse> sortArray(@RequestBody org.sorting.controllers.SortingRequest request) {
         String algorithm = request.getAlgorithm();
         int[] sortedArray = new int[0];
 
