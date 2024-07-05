@@ -5,7 +5,6 @@ import org.sorting.services.SortingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -35,7 +34,8 @@ private SortingResponseAssembler assembler;
 
     @PostMapping("/sort/{name}")
     public ResponseEntity<SortingResponse> sortArray(@PathVariable("name") String name, @RequestBody SortingRequest request) {
-        String algorithm = request.getAlgorithm();
+//        String algorithm = request.getAlgorithm();
+        String algorithm = name;
         int[] sortedArray;
 
         try {

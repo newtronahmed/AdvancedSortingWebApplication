@@ -14,11 +14,10 @@ public class SortingResponseAssembler extends RepresentationModelAssemblerSuppor
 
     @Override
     public SortingResponse toModel(SortingResponse entity) {
-        entity.add(linkTo(methodOn(SortingController.class).sortArray(null)).withSelfRel());
-        entity.add(linkTo(methodOn(SortingController.class).sortArray(new SortingRequest(null, "quickSort"))).withRel("quickSort"));
-        entity.add(linkTo(methodOn(SortingController.class).sortArray(new SortingRequest(null, "mergeSort"))).withRel("mergeSort"));
-        entity.add(linkTo(methodOn(SortingController.class).sortArray(new SortingRequest(null, "bucketSort"))).withRel("bucketSort"));
-        entity.add(linkTo(methodOn(SortingController.class).sortArray(new SortingRequest(null, "radixSort"))).withRel("radixSort"));
+        entity.add(linkTo(methodOn(SortingController.class).sortArray("quickSort", null)).withRel("quickSort"));
+        entity.add(linkTo(methodOn(SortingController.class).sortArray("mergeSort", null)).withRel("mergeSort"));
+        entity.add(linkTo(methodOn(SortingController.class).sortArray("bucketSort", null)).withRel("bucketSort"));
+        entity.add(linkTo(methodOn(SortingController.class).sortArray("radixSort", null)).withRel("radixSort"));
         return entity;
     }
 }
