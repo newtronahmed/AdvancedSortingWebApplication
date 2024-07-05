@@ -68,6 +68,10 @@
         button:hover {
             background-color: #2980b9;
         }
+        .text-red {
+            color: red;
+            padding: 5px;
+        }
     </style>
     <script>
         $(document).ready(function (message) {
@@ -79,7 +83,7 @@
                 method: 'GET',
                 success: function(data) {
                     $('#algorithm-name').text(data.name);
-                    $('#algorithm-description').text(data.description);
+                    $('#algorithm-description').html(data.description);
                     var links = data.links;
                     var relatedAlgorithms = '';
                     for (var key in links) {
@@ -91,6 +95,7 @@
                 },
                 error: function(error) {
                     console.log('Error fetching algorithm details:', error);
+
                 }
             });
 
@@ -110,7 +115,8 @@
                         $('#sorted-array').text('Sorted Array: ' + response.sortedArray.join(', '));
                     },
                     error: function(error) {
-                        console.log('Error sorting array:', error);
+                        // console.log('Error sorting array:', error);
+                        $('#error').text('There was an error while processing you request, kindly check your input');
                     }
                 });
             });
@@ -128,6 +134,7 @@
         <button type="submit">Sort</button>
     </form>
     <p id="sorted-array"></p>
+    <p id="error" class="text-red"></p>
     <a href="<c:url value='/'/>">Back to List</a>
 </div>
 </body>

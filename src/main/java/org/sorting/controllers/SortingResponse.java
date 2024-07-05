@@ -1,9 +1,10 @@
 package org.sorting.controllers;
+import org.springframework.hateoas.RepresentationModel;
 
-public class SortingResponse {
+public class SortingResponse extends RepresentationModel<SortingResponse>  {
     private int[] sortedArray;
 
-    public SortingResponse() {}
+    public SortingResponse(String error) {}
 
     public SortingResponse(int[] sortedArray) {
         this.sortedArray = sortedArray;
