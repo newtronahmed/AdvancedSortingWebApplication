@@ -117,7 +117,16 @@
                     data: JSON.stringify({ array: array }),
                     success: function(response) {
                         $('#sorted-array').text('Sorted Array: ' + response.sortedArray.join(', '));
-                    },
+
+                        var links = response.links;
+                        var relatedAlgorithms = '';
+                        for (var key in links) {
+                            if (key !== 'self') {
+                                relatedAlgorithms += '<li><button class="algorithm-button" data-url="' + links[key].href + '">' + links[key].rel + '</button></li>';
+                            }
+                        }
+                        $('#related-algorithms').html(relatedAlgorithms);
+                        },
                     error: function(error) {
                         $('#error').text('There was an error while processing your request, kindly check your input');
                     }
