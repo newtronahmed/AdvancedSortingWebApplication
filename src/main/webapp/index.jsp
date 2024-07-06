@@ -56,16 +56,6 @@
 <div class="container">
     <h1>Sorting Algorithms</h1>
     <ul class="" id="algorithm-list">
-<%--        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Bubble Sort</a></li>--%>
-<%--        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Selection Sort</a></li>--%>
-<%--        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Insertion Sort</a></li>--%>
-<%--        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Merge Sort</a></li>--%>
-<%--        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Quick Sort</a></li>--%>
-<%--        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Heap Sort</a></li>--%>
-<%--        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Radix Sort</a></li>--%>
-<%--        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Bucket Sort</a></li>--%>
-<%--        <li><a class="link-button" href="${pageContext.request.contextPath}/api/hello">Shell Sort</a></li>--%>
-
     </ul>
 </div>
 <script>

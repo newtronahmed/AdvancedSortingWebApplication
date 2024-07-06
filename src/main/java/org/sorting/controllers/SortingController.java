@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,76 +17,41 @@ import java.util.Map;
 @RequestMapping("/api")
 public class SortingController {
 
-    private Map<String, SortingAlgorithm> algorithmMap = new HashMap<>();
-    @Autowired
-    private SortingService sortingService;
-    @Autowired
-    private SortingResponseAssembler assembler;
+    private final Map<String, SortingAlgorithm> algorithmMap;
+    private final SortingService sortingService;
+    private final SortingResponseAssembler assembler;
 
-    public SortingController() {
-        initializeAlgorithms();
+    @Autowired
+    public SortingController(Map<String, SortingAlgorithm> algorithmMap, SortingService sortingService, SortingResponseAssembler assembler) {
+        this.algorithmMap = algorithmMap;
+        this.sortingService = sortingService;
+        this.assembler = assembler;
     }
 
     @GetMapping
     public List<SortingAlgorithm> getAllAlgorithms() {
-        return new ArrayList<>(algorithmMap.values());
+        return List.copyOf(algorithmMap.values());
     }
 
     @PostMapping("/sort/{name}")
     public ResponseEntity<SortingResponse> sortArray(@PathVariable("name") String name, @RequestBody SortingRequest request) {
         String algorithm = name;
-        int[] sortedArray;
+        if (!isValidAlgorithm(algorithm)) {
+            return badRequestResponse("Invalid algorithm: " + algorithm);
+        }
+
+        int[] array = request.getArray();
+        if (array == null || array.length == 0) {
+            return badRequestResponse("Array to sort is null or empty");
+        }
 
         try {
-            // Check if algorithm is valid
-            if (!isValidAlgorithm(algorithm)) {
-                return ResponseEntity.badRequest().body(
-                        assembler.toModel(new SortingResponse("Invalid algorithm: " + algorithm))
-                );
-            }
-
-            // Check if array to sort is provided
-            if (request.getArray() == null || request.getArray().length == 0) {
-                return ResponseEntity.badRequest().body(
-                        assembler.toModel(new SortingResponse("Array to sort is null or empty"))
-                );
-            }
-
-            // Perform sorting based on selected algorithm
-            switch (algorithm) {
-                case "quickSort":
-                    sortedArray = sortingService.quickSort(request.getArray());
-                    break;
-                case "mergeSort":
-                    sortedArray = sortingService.mergeSort(request.getArray());
-                    break;
-                case "bucketSort":
-                    sortedArray = sortingService.bucketSort(request.getArray());
-                    break;
-                case "radixSort":
-                    sortedArray = sortingService.radixSort(request.getArray());
-                case "heapSort":
-                    sortedArray = sortingService.heapSort(request.getArray());
-                    break;
-                default:
-                    return ResponseEntity.badRequest().body(
-                            assembler.toModel(new SortingResponse("Unsupported algorithm: " + algorithm))
-                    );
-            }
-
-            // Create response and add HATEOAS links
+            int[] sortedArray = performSorting(algorithm, array);
             SortingResponse response = new SortingResponse(sortedArray, algorithm);
-
             return ResponseEntity.ok(assembler.toModel(response));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    assembler.toModel(new SortingResponse("Internal server error"))
-            );
+            return internalServerErrorResponse("Internal server error");
         }
-    }
-
-    private boolean isValidAlgorithm(String algorithm) {
-        return algorithm.equals("quickSort") || algorithm.equals("mergeSort") || algorithm.equals("bucketSort") || algorithm.equals("radixSort");
     }
 
     @GetMapping("/{name}")
@@ -100,12 +63,26 @@ public class SortingController {
         return new ResponseEntity<>(algorithm, HttpStatus.OK);
     }
 
-    private void initializeAlgorithms() {
-        algorithmMap.put("quickSort", new SortingAlgorithm("quickSort", "<p><strong>Description:</strong> Quick Sort is a divide-and-conquer algorithm that works by selecting a 'pivot' element from the array and partitioning the other elements into two sub-arrays, according to whether they are less than or greater than the pivot. The sub-arrays are then sorted recursively.</p>"));
-        algorithmMap.put("mergeSort", new SortingAlgorithm("mergeSort", "<p><strong>Description:</strong> Merge Sort is a divide-and-conquer algorithm that divides the array into two halves, sorts each half, and then merges the two sorted halves into a single sorted array.</p>"));
-        algorithmMap.put("radixSort", new SortingAlgorithm("radixSort", "<p><strong>Description:</strong> Radix Sort is a non-comparative sorting algorithm that sorts integers by processing individual digits. It processes each digit from the least significant to the most significant (or vice versa).</p>"));
-        algorithmMap.put("bucketSort", new SortingAlgorithm("bucketSort", "<p><strong>Description:</strong> Bucket Sort is a distribution sorting algorithm that distributes elements into several buckets. Each bucket is then sorted individually, either using a different sorting algorithm or recursively applying the bucket sort.</p>"));
-        algorithmMap.put("heapSort", new SortingAlgorithm("heapSort", "<p><strong>Description:</strong> Bucket Sort is a distribution sorting algorithm that distributes elements into several buckets. Each bucket is then sorted individually, either using a different sorting algorithm or recursively applying the bucket sort.</p>"));
+    private boolean isValidAlgorithm(String algorithm) {
+        return algorithmMap.containsKey(algorithm);
     }
 
+    private int[] performSorting(String algorithm, int[] array) {
+        return switch (algorithm) {
+            case "quickSort" -> sortingService.quickSort(array);
+            case "mergeSort" -> sortingService.mergeSort(array);
+            case "bucketSort" -> sortingService.bucketSort(array);
+            case "radixSort" -> sortingService.radixSort(array);
+            case "heapSort" -> sortingService.heapSort(array);
+            default -> throw new IllegalArgumentException("Unsupported algorithm: " + algorithm);
+        };
+    }
+
+    private ResponseEntity<SortingResponse> badRequestResponse(String message) {
+        return ResponseEntity.badRequest().body(assembler.toModel(new SortingResponse(message)));
+    }
+
+    private ResponseEntity<SortingResponse> internalServerErrorResponse(String message) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(assembler.toModel(new SortingResponse(message)));
+    }
 }
