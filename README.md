@@ -80,7 +80,7 @@ The application follows a typical layered architecture with the following main l
 #### Add Algorithm Modal
 
 - Contains a form to input the name and details of a new algorithm.
-- Submits the new algorithm via an AJAX call to the `/api/add` endpoint.
+- Submits the new algorithm via an AJAX call to the `/api/algorithms` endpoint.
 - Updates the list of algorithms displayed on the home page.
 
 ### Service Layer
@@ -109,10 +109,10 @@ The application follows a typical layered architecture with the following main l
 #### SortingController
 
 - Handles API requests:
-    - `GET /api`: Returns the list of available algorithms.
+    - `GET /api/algorithms`: Returns the list of available algorithms.
     - `GET /api/{name}`: Returns details of the specified algorithm.
     - `POST /api/sort/{name}`: Sorts the given array using the specified algorithm.
-    - `POST /api/add`: Adds a new algorithm to the algorithm map and returns the updated list.
+    - `POST /api/algorithms`: Adds a new algorithm to the algorithm map and returns the updated list.
 
 ## Spring Modules Used
 
@@ -124,10 +124,10 @@ The application follows a typical layered architecture with the following main l
 
 ## API Endpoints
 
-- `GET /api`: Fetches the list of available algorithms.
+- `GET /api/algorithms`: Fetches the list of available algorithms.
 - `GET /api/{name}`: Fetches details of the specified algorithm.
 - `POST /api/sort/{name}`: Sorts the provided array using the specified algorithm.
-- `POST /api/add`: Adds a new algorithm and returns the updated list.
+- `POST /api/algorithms`: Adds a new algorithm and returns the updated list.
 
 ## Flow of Actions
 
