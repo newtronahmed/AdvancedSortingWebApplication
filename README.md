@@ -139,7 +139,7 @@ The application follows a typical layered architecture with the following main l
 ### Add Algorithm:
 
 - The user fills the form in the Add Algorithm modal.
-- An AJAX call is made to `POST /api/add`.
+- An AJAX call is made to `POST /api/algorithms`.
 - The response updates the list of algorithms.
 
 ### View Algorithm Details:
