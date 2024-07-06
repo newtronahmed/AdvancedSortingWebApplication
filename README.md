@@ -28,7 +28,7 @@ The application follows a typical layered architecture with the following main l
 - **SortingController**: Handles API requests for fetching algorithms, sorting arrays, and adding new algorithms.
 
 ## Architecture Diagram
-
+````
 +----------------------+
 |      Presentation    |
 | +------------------+ |
@@ -59,7 +59,7 @@ The application follows a typical layered architecture with the following main l
 | | Algorithm Map    | |
 | +------------------+ |
 +----------------------+
-
+````
 ## Component Descriptions
 
 ### Presentation Layer
