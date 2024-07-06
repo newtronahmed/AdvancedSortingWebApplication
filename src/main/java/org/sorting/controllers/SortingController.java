@@ -1,6 +1,7 @@
 package org.sorting.controllers;
 
 import org.sorting.algorithms.SortingAlgorithm;
+import org.sorting.requests.AddAlgorithmRequest;
 import org.sorting.requests.SortingRequest;
 import org.sorting.responses.SortingResponse;
 import org.sorting.responses.SortingResponseAssembler;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @RequestMapping("/api")
@@ -23,7 +25,7 @@ public class SortingController {
 
     @Autowired
     public SortingController(Map<String, SortingAlgorithm> algorithmMap, SortingService sortingService, SortingResponseAssembler assembler) {
-        this.algorithmMap = algorithmMap;
+        this.algorithmMap = new ConcurrentHashMap<>(algorithmMap);
         this.sortingService = sortingService;
         this.assembler = assembler;
     }
@@ -61,6 +63,24 @@ public class SortingController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(algorithm, HttpStatus.OK);
+    }
+    @PostMapping("/addAlgorithm")
+    public ResponseEntity<List<SortingAlgorithm>> addAlgorithm(@RequestBody AddAlgorithmRequest request) {
+        String name = request.getName();
+        String description = request.getDescription();
+
+        if (name == null || name.isBlank() || description == null || description.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (algorithmMap.containsKey(name)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
+        SortingAlgorithm newAlgorithm = new SortingAlgorithm(name, description);
+        algorithmMap.put(name, newAlgorithm);
+
+        return ResponseEntity.ok(List.copyOf(algorithmMap.values()));
     }
 
     private boolean isValidAlgorithm(String algorithm) {
