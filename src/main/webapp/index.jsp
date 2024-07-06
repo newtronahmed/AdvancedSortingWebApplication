@@ -119,14 +119,14 @@
         // Function to load algorithms
         function loadAlgorithms() {
             $.ajax({
-                url: '/api',
+                url: '/api/algorithms',
                 method: 'GET',
                 dataType: 'json',
                 success: function(data) {
                     var algorithmList = $('#algorithm-list');
                     algorithmList.empty();
                     data.forEach(function(algorithm) {
-                        var algorithmCard = '<div class="card"><div class="card-body"><h5 class="card-title">' + algorithm.name + '</h5><p class="card-text">' + algorithm.description + '</p><a class="link-button" href="/algorithmDetails/' + algorithm.name + '">Try Now</a></div></div>';
+                        var algorithmCard = '<div class="card"><div class="card-body"><h5 class="card-title">' + algorithm.name + '</h5><p class="card-text">' + algorithm.description + '</p><a class="link-button" href="/algorithms/' + algorithm.name + '">Try Now</a></div></div>';
                         algorithmList.append(algorithmCard);
                     });
                 },

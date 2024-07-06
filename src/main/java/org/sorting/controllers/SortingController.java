@@ -3,14 +3,18 @@ package org.sorting.controllers;
 import org.sorting.algorithms.SortingAlgorithm;
 import org.sorting.requests.AddAlgorithmRequest;
 import org.sorting.requests.SortingRequest;
+import org.sorting.responses.AlgorithmsResponse;
 import org.sorting.responses.SortingResponse;
 import org.sorting.responses.SortingResponseAssembler;
 import org.sorting.services.SortingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,11 +34,32 @@ public class SortingController {
         this.assembler = assembler;
     }
 
-    @GetMapping
-    public List<SortingAlgorithm> getAllAlgorithms() {
-        return List.copyOf(algorithmMap.values());
-    }
+    //    @GetMapping
+//    public List<SortingAlgorithm> getAllAlgorithms() {
+//        return List.copyOf(algorithmMap.values());
+//    }
+    @GetMapping("/algorithms")
+    public CollectionModel<AlgorithmsResponse> getAllAlgorithms() {
+        List<String> algorithms = new ArrayList<>(algorithmMap.keySet());
+        List<AlgorithmsResponse> algorithmsResponse = new ArrayList<>();
 
+        for (String algorithm : algorithms) {
+            AlgorithmsResponse link = new AlgorithmsResponse(algorithm);
+            link.add(WebMvcLinkBuilder.linkTo(PagesController.class)
+                    .slash("algorithm")
+                    .slash(algorithm)
+                    .withSelfRel());
+            algorithmsResponse.add(link);
+        }
+        // Add link to add algorithm endpoint
+        AlgorithmsResponse addAlgorithmLink = new AlgorithmsResponse("addAlgorithm");
+        addAlgorithmLink.add(WebMvcLinkBuilder.linkTo(SortingController.class)
+                .slash("algorithm")
+                .withRel("add"));
+        algorithmsResponse.add(addAlgorithmLink);
+
+        return CollectionModel.of(algorithmsResponse);
+    }
     @PostMapping("/sort/{name}")
     public ResponseEntity<SortingResponse> sortArray(@PathVariable("name") String name, @RequestBody SortingRequest request) {
         String algorithm = name;
@@ -64,7 +89,8 @@ public class SortingController {
         }
         return new ResponseEntity<>(algorithm, HttpStatus.OK);
     }
-    @PostMapping("/addAlgorithm")
+
+    @PostMapping("/algorithm")
     public ResponseEntity<List<SortingAlgorithm>> addAlgorithm(@RequestBody AddAlgorithmRequest request) {
         String name = request.getName();
         String description = request.getDescription();

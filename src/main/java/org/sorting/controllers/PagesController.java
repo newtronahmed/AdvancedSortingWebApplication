@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class PagesController {
 
-    @GetMapping("/algorithmDetails/{name}")
+    @GetMapping("/algorithms/{name}")
     public String showAlgorithmDetailsPage(@PathVariable("name") String name, Model model) {
       model.addAttribute("name", name);
      return "algorithmDetail";
