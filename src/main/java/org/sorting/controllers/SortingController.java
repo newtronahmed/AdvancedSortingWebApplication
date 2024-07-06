@@ -33,11 +33,6 @@ public class SortingController {
         this.sortingService = sortingService;
         this.assembler = assembler;
     }
-
-    //    @GetMapping
-//    public List<SortingAlgorithm> getAllAlgorithms() {
-//        return List.copyOf(algorithmMap.values());
-//    }
     @GetMapping("/algorithms")
     public CollectionModel<AlgorithmsResponse> getAllAlgorithms() {
         List<String> algorithms = new ArrayList<>(algorithmMap.keySet());
@@ -54,12 +49,45 @@ public class SortingController {
         // Add link to add algorithm endpoint
         AlgorithmsResponse addAlgorithmLink = new AlgorithmsResponse("addAlgorithm");
         addAlgorithmLink.add(WebMvcLinkBuilder.linkTo(SortingController.class)
-                .slash("algorithm")
+                .slash("algorithms")
                 .withRel("add"));
         algorithmsResponse.add(addAlgorithmLink);
 
         return CollectionModel.of(algorithmsResponse);
     }
+    @PostMapping("/algorithms")
+    public ResponseEntity<List<SortingAlgorithm>> addAlgorithm(@RequestBody AddAlgorithmRequest request) {
+        String name = request.getName();
+        String description = request.getDescription();
+
+        if (name == null || name.isBlank() || description == null || description.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (algorithmMap.containsKey(name)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
+        SortingAlgorithm newAlgorithm = new SortingAlgorithm(name, description);
+        algorithmMap.put(name, newAlgorithm);
+
+        // Construct a new list with all algorithms sorted as desired
+        List<SortingAlgorithm> sortedAlgorithms = new ArrayList<>(algorithmMap.values());
+        // Append the new algorithm to the end
+        sortedAlgorithms.add(newAlgorithm);
+
+        return ResponseEntity.ok(sortedAlgorithms);
+    }
+    @GetMapping("/{name}")
+    public ResponseEntity<SortingAlgorithm> getAlgorithm(@PathVariable("name") String name) {
+        SortingAlgorithm algorithm = algorithmMap.get(name);
+        if (algorithm == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(algorithm, HttpStatus.OK);
+    }
+
+
     @PostMapping("/sort/{name}")
     public ResponseEntity<SortingResponse> sortArray(@PathVariable("name") String name, @RequestBody SortingRequest request) {
         String algorithm = name;
@@ -79,34 +107,6 @@ public class SortingController {
         } catch (Exception e) {
             return internalServerErrorResponse("Internal server error");
         }
-    }
-
-    @GetMapping("/{name}")
-    public ResponseEntity<SortingAlgorithm> getAlgorithm(@PathVariable("name") String name) {
-        SortingAlgorithm algorithm = algorithmMap.get(name);
-        if (algorithm == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(algorithm, HttpStatus.OK);
-    }
-
-    @PostMapping("/algorithm")
-    public ResponseEntity<List<SortingAlgorithm>> addAlgorithm(@RequestBody AddAlgorithmRequest request) {
-        String name = request.getName();
-        String description = request.getDescription();
-
-        if (name == null || name.isBlank() || description == null || description.isBlank()) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        if (algorithmMap.containsKey(name)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-
-        SortingAlgorithm newAlgorithm = new SortingAlgorithm(name, description);
-        algorithmMap.put(name, newAlgorithm);
-
-        return ResponseEntity.ok(List.copyOf(algorithmMap.values()));
     }
 
     private boolean isValidAlgorithm(String algorithm) {

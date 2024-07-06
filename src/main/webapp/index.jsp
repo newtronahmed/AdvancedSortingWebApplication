@@ -54,7 +54,7 @@
     <p>Explore different sorting algorithms and visualize how they work. Select an algorithm to sort an array of numbers in various ways.</p>
     <div class="list-group" id="algorithm-list">
     </div>
-    <button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#addAlgorithmModal">
+    <button type="button" class="btn btn-secondary mt-3" data-toggle="modal" data-target="#addAlgorithmModal">
         Add Algorithm
     </button>
 </div>

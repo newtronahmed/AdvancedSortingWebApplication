@@ -62,6 +62,10 @@
         .algorithm-button:hover {
             background-color: #27ae60;
         }
+        #sorted-array {
+            font-weight: bolder;
+        }
+
     </style>
     <script>
         $(document).ready(function() {
@@ -106,7 +110,7 @@
                         var links = response.links;
                         var relatedAlgorithms = '';
                         for (var key in links) {
-                            if (key !== 'self') {
+                            if (links[key].rel !== 'self') {
                                 relatedAlgorithms += '<li><button class="btn btn-success algorithm-button" data-url="' + links[key].href + '">' + links[key].rel + '</button></li>';
                             }
                         }
@@ -131,7 +135,7 @@
                     contentType: 'application/json',
                     data: JSON.stringify({ array: array }),
                     success: function(response) {
-                        $('#sorted-array').text('Sorted Array: using '+ response.algorithm + ' ' + response.sortedArray.join(', '));
+                        $('#sorted-array').html('<h3>Sorted Array: using '+ response.algorithm + ' <span style="color: blue">' + response.sortedArray.join(', ') + '</span></h3>');
                     },
                     error: function(error) {
                         $('#error').text('There was an error while processing your request, kindly check your input');
@@ -145,13 +149,17 @@
 <div class="container">
     <h1 id="algorithm-name" class="text-center"></h1>
     <p id="algorithm-description"></p>
-    <h3>Related Algorithms</h3>
-    <ul id="related-algorithms"></ul>
+
     <form id="sort-form" class="mt-3">
         <input type="text" id="array-input" class="form-control mb-3" placeholder="Enter array elements separated by commas" required>
         <button type="submit" class="btn btn-primary btn-block">Sort</button>
     </form>
-    <p id="sorted-array" class="mt-3"></p>
+    <h3 id="sorted-array"  class="my-4"></h3>
+    <h6 class="my-4">Try With other algorithms</h6>
+    <ul id="related-algorithms" style="display: flex"></ul>
+<%--    <p id="sorted-array"  class="mt-3"></p>--%>
+
+
     <p id="error" class="text-red"></p>
     <a href="<c:url value='/'/>" class="btn btn-link">Back to List</a>
 </div>
