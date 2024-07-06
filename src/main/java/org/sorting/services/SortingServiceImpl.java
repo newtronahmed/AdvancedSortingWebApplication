@@ -8,7 +8,6 @@ public class SortingServiceImpl implements SortingService {
 
     @Override
     public int[] quickSort(int[] array) {
-        // Implement Quick Sort logic here
         QuickSort quickSort = new QuickSort();
         quickSort.sort(array);
         return array;
@@ -16,7 +15,6 @@ public class SortingServiceImpl implements SortingService {
 
     @Override
     public int[] mergeSort(int[] array) {
-        // Implement Merge Sort logic here
         MergeSort mergeSort = new MergeSort();
         mergeSort.sort(array);
         return array;
@@ -24,7 +22,6 @@ public class SortingServiceImpl implements SortingService {
 
     @Override
     public int[] bucketSort(int[] array) {
-        // Implement Bucket Sort logic here
         BucketSort bucketSort = new BucketSort();
         bucketSort.sort(array);
         return array;
@@ -32,7 +29,6 @@ public class SortingServiceImpl implements SortingService {
 
     @Override
     public int[] radixSort(int[] array) {
-        // Implement Radix Sort logic here
         RadixSort radixSort = new RadixSort();
         radixSort.sort(array);
         return array;
@@ -45,5 +41,4 @@ public class SortingServiceImpl implements SortingService {
         return array;
 
     }
-    // Implement other sorting algorithms here
 }

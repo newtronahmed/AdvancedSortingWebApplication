@@ -1,4 +1,4 @@
-package org.sorting.controllers;
+package org.sorting.responses;
 import org.springframework.hateoas.RepresentationModel;
 
 public class SortingResponse extends RepresentationModel<SortingResponse>  {

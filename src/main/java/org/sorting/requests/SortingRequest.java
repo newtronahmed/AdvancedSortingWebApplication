@@ -1,4 +1,4 @@
-package org.sorting.controllers;
+package org.sorting.requests;
 
 public class SortingRequest {
     private int[] array;

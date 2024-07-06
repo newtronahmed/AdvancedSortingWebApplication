@@ -1,9 +1,11 @@
 package org.sorting.controllers;
 
 import org.sorting.algorithms.SortingAlgorithm;
+import org.sorting.requests.SortingRequest;
+import org.sorting.responses.SortingResponse;
+import org.sorting.responses.SortingResponseAssembler;
 import org.sorting.services.SortingService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,17 +20,15 @@ import java.util.Map;
 public class SortingController {
 
     private Map<String, SortingAlgorithm> algorithmMap = new HashMap<>();
-//    private final SortingService sortingService;
-@Autowired
-private SortingService sortingService;
-@Autowired
-private SortingResponseAssembler assembler;
+    @Autowired
+    private SortingService sortingService;
+    @Autowired
+    private SortingResponseAssembler assembler;
 
     public SortingController() {
-//        this.assembler = assembler;
-//        this.sortingService = sortingService;
         initializeAlgorithms();
     }
+
     @GetMapping
     public List<SortingAlgorithm> getAllAlgorithms() {
         return new ArrayList<>(algorithmMap.values());
@@ -36,7 +36,6 @@ private SortingResponseAssembler assembler;
 
     @PostMapping("/sort/{name}")
     public ResponseEntity<SortingResponse> sortArray(@PathVariable("name") String name, @RequestBody SortingRequest request) {
-//        String algorithm = request.getAlgorithm();
         String algorithm = name;
         int[] sortedArray;
 
@@ -68,6 +67,8 @@ private SortingResponseAssembler assembler;
                     break;
                 case "radixSort":
                     sortedArray = sortingService.radixSort(request.getArray());
+                case "heapSort":
+                    sortedArray = sortingService.heapSort(request.getArray());
                     break;
                 default:
                     return ResponseEntity.badRequest().body(
@@ -77,7 +78,6 @@ private SortingResponseAssembler assembler;
 
             // Create response and add HATEOAS links
             SortingResponse response = new SortingResponse(sortedArray, algorithm);
-//            response.setAlgorithm(algorithm); // Set algorithm for self link
 
             return ResponseEntity.ok(assembler.toModel(response));
         } catch (Exception e) {
@@ -88,7 +88,6 @@ private SortingResponseAssembler assembler;
     }
 
     private boolean isValidAlgorithm(String algorithm) {
-        // Add validation logic for supported algorithms
         return algorithm.equals("quickSort") || algorithm.equals("mergeSort") || algorithm.equals("bucketSort") || algorithm.equals("radixSort");
     }
 
@@ -100,17 +99,13 @@ private SortingResponseAssembler assembler;
         }
         return new ResponseEntity<>(algorithm, HttpStatus.OK);
     }
+
     private void initializeAlgorithms() {
         algorithmMap.put("quickSort", new SortingAlgorithm("quickSort", "<p><strong>Description:</strong> Quick Sort is a divide-and-conquer algorithm that works by selecting a 'pivot' element from the array and partitioning the other elements into two sub-arrays, according to whether they are less than or greater than the pivot. The sub-arrays are then sorted recursively.</p>"));
         algorithmMap.put("mergeSort", new SortingAlgorithm("mergeSort", "<p><strong>Description:</strong> Merge Sort is a divide-and-conquer algorithm that divides the array into two halves, sorts each half, and then merges the two sorted halves into a single sorted array.</p>"));
         algorithmMap.put("radixSort", new SortingAlgorithm("radixSort", "<p><strong>Description:</strong> Radix Sort is a non-comparative sorting algorithm that sorts integers by processing individual digits. It processes each digit from the least significant to the most significant (or vice versa).</p>"));
         algorithmMap.put("bucketSort", new SortingAlgorithm("bucketSort", "<p><strong>Description:</strong> Bucket Sort is a distribution sorting algorithm that distributes elements into several buckets. Each bucket is then sorted individually, either using a different sorting algorithm or recursively applying the bucket sort.</p>"));
         algorithmMap.put("heapSort", new SortingAlgorithm("heapSort", "<p><strong>Description:</strong> Bucket Sort is a distribution sorting algorithm that distributes elements into several buckets. Each bucket is then sorted individually, either using a different sorting algorithm or recursively applying the bucket sort.</p>"));
-
-        // Add more algorithms as needed
     }
-
-
-    // Add your RESTful endpoints here
 
 }
