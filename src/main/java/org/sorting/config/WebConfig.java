@@ -1,6 +1,4 @@
-<<<<<<< Updated upstream
-package org.sorting.config;public class WebConfig {
-=======
+
 package org.sorting.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,5 +25,5 @@ public class WebConfig {
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
     }
->>>>>>> Stashed changes
+
 }
