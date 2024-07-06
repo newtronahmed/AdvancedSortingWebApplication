@@ -1,9 +1,12 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html>
 <html>
 <head>
     <title>Algorithm Details</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,7 +21,7 @@
         }
         .container {
             background: white;
-            padding: 20px;
+            padding: 30px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 80%;
@@ -42,24 +45,6 @@
         }
         form {
             margin-top: 20px;
-        }
-        input[type="text"] {
-            width: calc(100% - 22px);
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #2980b9;
         }
         .text-red {
             color: red;
@@ -93,7 +78,7 @@
                     var relatedAlgorithms = '';
                     for (var key in links) {
                         if (key !== 'self') {
-                            relatedAlgorithms += '<li><button class="algorithm-button" data-url="' + links[key].href + '">' + key + '</button></li>';
+                            relatedAlgorithms += '<li><button class="btn btn-success algorithm-button" data-url="' + links[key].href + '">' + key + '</button></li>';
                         }
                     }
                     $('#related-algorithms').html(relatedAlgorithms);
@@ -122,11 +107,11 @@
                         var relatedAlgorithms = '';
                         for (var key in links) {
                             if (key !== 'self') {
-                                relatedAlgorithms += '<li><button class="algorithm-button" data-url="' + links[key].href + '">' + links[key].rel + '</button></li>';
+                                relatedAlgorithms += '<li><button class="btn btn-success algorithm-button" data-url="' + links[key].href + '">' + links[key].rel + '</button></li>';
                             }
                         }
                         $('#related-algorithms').html(relatedAlgorithms);
-                        },
+                    },
                     error: function(error) {
                         $('#error').text('There was an error while processing your request, kindly check your input');
                     }
@@ -146,7 +131,7 @@
                     contentType: 'application/json',
                     data: JSON.stringify({ array: array }),
                     success: function(response) {
-                        $('#sorted-array').text('Sorted Array: ' + response.sortedArray.join(', '));
+                        $('#sorted-array').text('Sorted Array: using '+ response.algorithm + ' ' + response.sortedArray.join(', '));
                     },
                     error: function(error) {
                         $('#error').text('There was an error while processing your request, kindly check your input');
@@ -158,17 +143,17 @@
 </head>
 <body>
 <div class="container">
-    <h1 id="algorithm-name"></h1>
+    <h1 id="algorithm-name" class="text-center"></h1>
     <p id="algorithm-description"></p>
     <h3>Related Algorithms</h3>
     <ul id="related-algorithms"></ul>
-    <form id="sort-form">
-        <input type="text" id="array-input" placeholder="Enter array elements separated by commas" required>
-        <button type="submit">Sort</button>
+    <form id="sort-form" class="mt-3">
+        <input type="text" id="array-input" class="form-control mb-3" placeholder="Enter array elements separated by commas" required>
+        <button type="submit" class="btn btn-primary btn-block">Sort</button>
     </form>
-    <p id="sorted-array"></p>
+    <p id="sorted-array" class="mt-3"></p>
     <p id="error" class="text-red"></p>
-    <a href="<c:url value='/'/>">Back to List</a>
+    <a href="<c:url value='/'/>" class="btn btn-link">Back to List</a>
 </div>
 </body>
 </html>
