@@ -1,4 +1,3 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -92,30 +91,6 @@
         // Load algorithms on page load
         loadAlgorithms();
 
-        // Handle form submission
-        $('#add-algorithm-form').on('submit', function(event) {
-            event.preventDefault();
-            var algorithmName = $('#algorithm-name').val();
-            var algorithmDescription = $('#algorithm-description').val();
-
-            $.ajax({
-                url: '/api/addAlgorithm',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    name: algorithmName,
-                    description: algorithmDescription
-                }),
-                success: function(data) {
-                    $('#addAlgorithmModal').modal('hide');
-                    loadAlgorithms();
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error adding algorithm:', error);
-                }
-            });
-        });
-
         // Function to load algorithms
         function loadAlgorithms() {
             $.ajax({
@@ -125,9 +100,38 @@
                 success: function(data) {
                     var algorithmList = $('#algorithm-list');
                     algorithmList.empty();
-                    data.forEach(function(algorithm) {
-                        var algorithmCard = '<div class="card"><div class="card-body"><h5 class="card-title">' + algorithm.name + '</h5><p class="card-text">' + algorithm.description + '</p><a class="link-button" href="/algorithms/' + algorithm.name + '">Try Now</a></div></div>';
-                        algorithmList.append(algorithmCard);
+                    var addAlgorithmUrl = '';
+                    data.content.forEach(function(algorithm) {
+                        if (algorithm.name === 'addAlgorithm') {
+                            addAlgorithmUrl = algorithm.links.find(link => link.rel === 'add').href;
+                        } else {
+                            var algorithmCard = '<div class="card"><div class="card-body"><h5 class="card-title">' + algorithm.name + '</h5><p class="card-text">' + (algorithm.description || '') + '</p><a class="link-button" href="' + algorithm.links[0].href + '">Try Now</a></div></div>';
+                            algorithmList.append(algorithmCard);
+                        }
+                    });
+
+                    // Handle form submission
+                    $('#add-algorithm-form').on('submit', function(event) {
+                        event.preventDefault();
+                        var algorithmName = $('#algorithm-name').val();
+                        var algorithmDescription = $('#algorithm-description').val();
+
+                        $.ajax({
+                            url: addAlgorithmUrl,
+                            method: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                name: algorithmName,
+                                description: algorithmDescription
+                            }),
+                            success: function(data) {
+                                $('#addAlgorithmModal').modal('hide');
+                                loadAlgorithms();
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error adding algorithm:', error);
+                            }
+                        });
                     });
                 },
                 error: function(xhr, status, error) {

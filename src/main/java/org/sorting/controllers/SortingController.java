@@ -46,7 +46,7 @@ public class SortingController {
         for (String algorithm : algorithms) {
             AlgorithmsResponse link = new AlgorithmsResponse(algorithm);
             link.add(WebMvcLinkBuilder.linkTo(PagesController.class)
-                    .slash("algorithm")
+                    .slash("algorithms")
                     .slash(algorithm)
                     .withSelfRel());
             algorithmsResponse.add(link);
