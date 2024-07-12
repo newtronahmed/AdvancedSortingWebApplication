@@ -1,9 +1,8 @@
 package org.sorting.algorithms;
 
-import org.springframework.hateoas.RepresentationModel;
 
 
-public  class SortingAlgorithm extends RepresentationModel<SortingAlgorithm> {
+public  class SortingAlgorithm {
     private String name;
     private String description;
     public SortingAlgorithm(String name, String description) {

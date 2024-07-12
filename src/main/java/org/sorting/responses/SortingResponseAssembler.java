@@ -1,5 +1,5 @@
 package org.sorting.responses;
-import org.sorting.controllers.SortingController;
+import org.sorting.controllers.AlgorithmsController;
 import org.sorting.requests.SortingRequest;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ public class SortingResponseAssembler implements RepresentationModelAssembler<So
     public SortingResponse toModel(SortingResponse entity) {
 
         // Add self link
-        entity.add(WebMvcLinkBuilder.linkTo(methodOn(SortingController.class).sortArray(entity.getAlgorithm(), new SortingRequest())).withSelfRel());
+        entity.add(WebMvcLinkBuilder.linkTo(methodOn(AlgorithmsController.class).sortArray(entity.getAlgorithm(), new SortingRequest())).withSelfRel());
 
         // List of all algorithms
         List<String> algorithms = Arrays.asList("quickSort", "mergeSort", "bucketSort", "radixSort", "heapSort");
@@ -29,7 +29,7 @@ public class SortingResponseAssembler implements RepresentationModelAssembler<So
         // Add links to other algorithms
         for (String algo : algorithms) {
             if (!algo.equals(entity.getAlgorithm())) {
-                entity.add(linkTo(methodOn(SortingController.class).sortArray(algo, new SortingRequest())).withRel(algo));
+                entity.add(linkTo(methodOn(AlgorithmsController.class).sortArray(algo, new SortingRequest())).withRel(algo));
             }
         }
         return entity;

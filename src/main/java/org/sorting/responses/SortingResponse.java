@@ -12,7 +12,6 @@ public class SortingResponse extends RepresentationModel<SortingResponse>  {
     public SortingResponse(int[] sortedArray, String algorithm) {
         this.sortedArray = sortedArray;
         this.algorithm = algorithm;
-
     }
 
     public int[] getSortedArray() {

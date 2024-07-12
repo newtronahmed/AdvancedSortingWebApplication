@@ -4,6 +4,7 @@ import org.sorting.algorithms.SortingAlgorithm;
 import org.sorting.requests.AddAlgorithmRequest;
 import org.sorting.requests.SortingRequest;
 import org.sorting.responses.AlgorithmsResponse;
+import org.sorting.responses.ErrorResponse;
 import org.sorting.responses.SortingResponse;
 import org.sorting.responses.SortingResponseAssembler;
 import org.sorting.services.SortingService;
@@ -21,14 +22,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @RequestMapping("/api")
-public class SortingController {
+public class AlgorithmsController {
 
     private final Map<String, SortingAlgorithm> algorithmMap;
     private final SortingService sortingService;
     private final SortingResponseAssembler assembler;
 
     @Autowired
-    public SortingController(Map<String, SortingAlgorithm> algorithmMap, SortingService sortingService, SortingResponseAssembler assembler) {
+    public AlgorithmsController(Map<String, SortingAlgorithm> algorithmMap, SortingService sortingService, SortingResponseAssembler assembler) {
         this.algorithmMap = new ConcurrentHashMap<>(algorithmMap);
         this.sortingService = sortingService;
         this.assembler = assembler;
@@ -48,7 +49,7 @@ public class SortingController {
         }
         // Add link to add algorithm endpoint
         AlgorithmsResponse addAlgorithmLink = new AlgorithmsResponse("addAlgorithm");
-        addAlgorithmLink.add(WebMvcLinkBuilder.linkTo(SortingController.class)
+        addAlgorithmLink.add(WebMvcLinkBuilder.linkTo(AlgorithmsController.class)
                 .slash("algorithms")
                 .withRel("add"));
         algorithmsResponse.add(addAlgorithmLink);
@@ -89,10 +90,9 @@ public class SortingController {
 
 
     @PostMapping("/sort/{name}")
-    public ResponseEntity<SortingResponse> sortArray(@PathVariable("name") String name, @RequestBody SortingRequest request) {
-        String algorithm = name;
-        if (!isValidAlgorithm(algorithm)) {
-            return badRequestResponse("Invalid algorithm: " + algorithm);
+    public ResponseEntity<?> sortArray(@PathVariable("name") String name, @RequestBody SortingRequest request) {
+        if (!isValidAlgorithm(name)) {
+            return badRequestResponse("Invalid algorithm: " + name);
         }
 
         int[] array = request.getArray();
@@ -101,8 +101,8 @@ public class SortingController {
         }
 
         try {
-            int[] sortedArray = performSorting(algorithm, array);
-            SortingResponse response = new SortingResponse(sortedArray, algorithm);
+            int[] sortedArray = performSorting(name, array);
+            SortingResponse response = new SortingResponse(sortedArray, name);
             return ResponseEntity.ok(assembler.toModel(response));
         } catch (Exception e) {
             return internalServerErrorResponse("Internal server error");
@@ -124,11 +124,20 @@ public class SortingController {
         };
     }
 
-    private ResponseEntity<SortingResponse> badRequestResponse(String message) {
-        return ResponseEntity.badRequest().body(assembler.toModel(new SortingResponse(message)));
-    }
+//    private ResponseEntity<SortingResponse> badRequestResponse(String message) {
+//        return ResponseEntity.badRequest().body(assembler.toModel(new SortingResponse(message)));
+//    }
+//
+//    private ResponseEntity<SortingResponse> internalServerErrorResponse(String message) {
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(assembler.toModel(new SortingResponse(message)));
+//    }
+private ResponseEntity<ErrorResponse> badRequestResponse(String message) {
+    ErrorResponse errorResponse = new ErrorResponse(message, HttpStatus.BAD_REQUEST.value());
+    return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+}
 
-    private ResponseEntity<SortingResponse> internalServerErrorResponse(String message) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(assembler.toModel(new SortingResponse(message)));
+    private ResponseEntity<ErrorResponse> internalServerErrorResponse(String message) {
+        ErrorResponse errorResponse = new ErrorResponse(message, HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
