@@ -7,6 +7,12 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Include SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <!-- Include SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -95,10 +101,37 @@
             // Handle form submission
             $('#sort-form').submit(function(event) {
                 event.preventDefault();
+
                 var arrayInput = $('#array-input').val();
-                var array = arrayInput.split(',').map(function(item) {
-                    return item.trim();
-                });
+
+                if (!arrayInput) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Please enter an array to sort.'
+                    });
+                    return;
+                }
+
+                var array = [];
+                try {
+                    array = arrayInput.split(',').map(function(item) {
+                        var trimmedItem = item.trim();
+                        if (isNaN(trimmedItem)) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'All elements in the array must be numbers.'
+                            });
+                            throw new Error('Invalid input: Non-numeric value');
+                        }
+                        return parseInt(trimmedItem, 10);
+                    });
+                } catch (error) {
+                    // Exit if input is invalid
+                    return;
+                }
+
                 $.ajax({
                     url: '/api/sort/' + algorithmName,
                     method: 'POST',
@@ -116,11 +149,31 @@
                         }
                         $('#related-algorithms').html(relatedAlgorithms);
                     },
-                    error: function(error) {
-                        $('#error').text('There was an error while processing your request, kindly check your input');
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        if (jqXHR.status === 400) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Client Error',
+                                text: jqXHR.responseJSON.message
+                            });
+                        } else if (jqXHR.status === 500) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Internal Server Error',
+                                text: jqXHR.responseJSON.message
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Unexpected Error',
+                                text: textStatus
+                            });
+                        }
+                        // $('#error').text('There was an error while processing your request, kindly check your input');
                     }
                 });
             });
+
 
             // Handle algorithm button clicks
             $(document).on('click', '.algorithm-button', function() {
@@ -151,7 +204,7 @@
     <p id="algorithm-description"></p>
 
     <form id="sort-form" class="mt-3">
-        <input type="text" id="array-input" class="form-control mb-3" placeholder="Enter array elements separated by commas" required>
+        <input type="text" id="array-input" class="form-control mb-3" placeholder="Enter array elements separated by commas" >
         <button type="submit" class="btn btn-primary btn-block">Sort</button>
     </form>
     <h3 id="sorted-array"  class="my-4"></h3>

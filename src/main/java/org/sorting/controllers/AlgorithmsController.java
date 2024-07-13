@@ -104,8 +104,11 @@ public class AlgorithmsController {
             int[] sortedArray = performSorting(name, array);
             SortingResponse response = new SortingResponse(sortedArray, name);
             return ResponseEntity.ok(assembler.toModel(response));
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
+            return internalServerErrorResponse(e.getMessage());
+        }catch (Exception e) {
             return internalServerErrorResponse("Internal server error");
+
         }
     }
 
@@ -124,13 +127,7 @@ public class AlgorithmsController {
         };
     }
 
-//    private ResponseEntity<SortingResponse> badRequestResponse(String message) {
-//        return ResponseEntity.badRequest().body(assembler.toModel(new SortingResponse(message)));
-//    }
-//
-//    private ResponseEntity<SortingResponse> internalServerErrorResponse(String message) {
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(assembler.toModel(new SortingResponse(message)));
-//    }
+
 private ResponseEntity<ErrorResponse> badRequestResponse(String message) {
     ErrorResponse errorResponse = new ErrorResponse(message, HttpStatus.BAD_REQUEST.value());
     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);

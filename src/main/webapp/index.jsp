@@ -42,6 +42,7 @@
         .link-button:hover {
             background-color: #0056b3;
             border-color: #0056b3;
+            color: white;
         }
         .card {
             margin-bottom: 15px;
@@ -105,7 +106,7 @@
                         if (algorithm.name === 'addAlgorithm') {
                             addAlgorithmUrl = algorithm.links.find(link => link.rel === 'add').href;
                         } else {
-                            var algorithmCard = '<div class="card"><div class="card-body"><h5 class="card-title">' + algorithm.name + '</h5><p class="card-text">' + (algorithm.description || '') + '</p><a class="link-button" href="' + algorithm.links[0].href + '">Try Now</a></div></div>';
+                            var algorithmCard = '<div class="card"><div class="card-body"><h5 class="card-title" style="text-transform: capitalize">' + algorithm.name + '</h5><p class="card-text">' + (algorithm.description || '') + '</p><a class="link-button" href="' + algorithm.links[0].href + '">Try Now</a></div></div>';
                             algorithmList.append(algorithmCard);
                         }
                     });
