@@ -9,6 +9,7 @@ import org.sorting.responses.SortingResponse;
 import org.sorting.responses.SortingResponseAssembler;
 import org.sorting.services.SortingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -34,27 +36,41 @@ public class AlgorithmsController {
         this.sortingService = sortingService;
         this.assembler = assembler;
     }
+    @Cacheable(value = "algorithmsCache", key = "'allAlgorithms'")
     @GetMapping("/algorithms")
     public CollectionModel<AlgorithmsResponse> getAllAlgorithms() {
-        List<String> algorithms = new ArrayList<>(algorithmMap.keySet());
-        List<AlgorithmsResponse> algorithmsResponse = new ArrayList<>();
+        List<String> algorithms = getCachedAlgorithms();
+        List<AlgorithmsResponse> algorithmsResponse = createAlgorithmResponses(algorithms);
+        addAddAlgorithmLink(algorithmsResponse);
+        return CollectionModel.of(algorithmsResponse);
+    }
 
-        for (String algorithm : algorithms) {
-            AlgorithmsResponse link = new AlgorithmsResponse(algorithm);
-            link.add(WebMvcLinkBuilder.linkTo(PagesController.class)
-                    .slash("algorithms")
-                    .slash(algorithm)
-                    .withSelfRel());
-            algorithmsResponse.add(link);
-        }
-        // Add link to add algorithm endpoint
+    @Cacheable(value = "algorithmsCache", key = "'algorithmList'")
+    public List<String> getCachedAlgorithms() {
+        return new ArrayList<>(algorithmMap.keySet());
+    }
+
+    private List<AlgorithmsResponse> createAlgorithmResponses(List<String> algorithms) {
+        return algorithms.stream()
+                .map(this::createAlgorithmResponse)
+                .collect(Collectors.toList());
+    }
+
+    private AlgorithmsResponse createAlgorithmResponse(String algorithm) {
+        AlgorithmsResponse link = new AlgorithmsResponse(algorithm);
+        link.add(WebMvcLinkBuilder.linkTo(PagesController.class)
+                .slash("algorithms")
+                .slash(algorithm)
+                .withSelfRel());
+        return link;
+    }
+
+    private void addAddAlgorithmLink(List<AlgorithmsResponse> algorithmsResponse) {
         AlgorithmsResponse addAlgorithmLink = new AlgorithmsResponse("addAlgorithm");
         addAlgorithmLink.add(WebMvcLinkBuilder.linkTo(AlgorithmsController.class)
                 .slash("algorithms")
                 .withRel("add"));
         algorithmsResponse.add(addAlgorithmLink);
-
-        return CollectionModel.of(algorithmsResponse);
     }
     @PostMapping("/algorithms")
     public ResponseEntity<List<SortingAlgorithm>> addAlgorithm(@RequestBody AddAlgorithmRequest request) {
